@@ -33,6 +33,9 @@ function redrawCanvas(canvas, canvasContainer, broadcast, drawPattern){
 	if(drawPattern === "christmas"){
 		sayChristmasWrapAround(canvas, broadcast);
 	}
+	else if(drawPattern === "loading"){
+		sayLoading(canvas, broadcast);
+	}
 	else sayHelloWrapAround(canvas, broadcast);
 	// drawPeesha();
 }
@@ -186,18 +189,19 @@ function drawBackground(imgSrc){
 	}
 }
 
-function sayHelloCenterLoop(){
-	const helloWorld = "Hello!!";
+function sayLoading(canvas, broadcast){
+	// const helloWorld = "Hello!!";
+	var ctx = canvas.getContext("2d");
 
-	ctx.translate(canvas.width/2, 100);
+	// ctx.translate(canvas.width/2, 100);
 
-    ctx.font=canvasSize*.15 + "px arial";
+    ctx.font=(canvas.height)*.15 + "px arial";
     ctx.textAlign="center";
 	ctx.textBaseline="middle";
 	var textAlphaDelta = .09;
 	var textColorDelta = 360*textAlphaDelta;
 	// var posShiftDelta = canvasSize*.006;
-	var posShiftDelta = canvasSize*.05;
+	var posShiftDelta = canvas.height*.05;
 
 	// var xPos = canvasSize*.05;
 	var xPos = 0;
@@ -205,7 +209,7 @@ function sayHelloCenterLoop(){
 	var textColor = 0;
 	for(var alphaValue=.2; alphaValue<1; alphaValue+=textAlphaDelta){
 		ctx.fillStyle="hsla(" + textColor + ", 100%, 50%, " + alphaValue + ")"
-		ctx.fillText(helloWorld, xPos, yPos);
+		ctx.fillText(broadcast, xPos, yPos);
 
 		// xPos += posShiftDelta;
 		yPos += posShiftDelta;
@@ -214,7 +218,7 @@ function sayHelloCenterLoop(){
 
 	for(var alphaValue=1; alphaValue>=.2; alphaValue-=textAlphaDelta){
 		ctx.fillStyle="hsla(" + textColor + ", 100%, 50%, " + alphaValue + ")"
-		ctx.fillText(helloWorld, xPos, yPos);
+		ctx.fillText(broadcast, xPos, yPos);
 
 		// xPos += posShiftDelta;
 		yPos += posShiftDelta;
@@ -229,7 +233,7 @@ function clearCanvas(canvas, canvasContainer, redrawFunction){
 	canvas.width = canvasContainer.offsetWidth;
 	canvas.height = canvasContainer.offsetHeight;
 
-	window.removeEventListener('resize', redrawFunction, false);
+	if(redrawFunction) window.removeEventListener('resize', redrawFunction, false);
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	document.getElementById('canvas').style.backgroundImage = 'none';
