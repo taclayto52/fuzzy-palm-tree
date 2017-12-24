@@ -1,1 +1,1 @@
-web: node --debug=5858 app.js
+web: npm run prod-start
