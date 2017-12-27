@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import whatInput from 'what-input';
-import {redrawCanvas as helloRedrawCanvas, drawBackground, clearCanvas as helloClearCanvas} from "./hello";
+import {redrawCanvas as helloRedrawCanvas, drawBackground, clearCanvas as helloClearCanvas, preLoadImages} from "./hello";
 import {redrawCanvas as clockRedrawCanvas, changeBackgroundColor ,clearCanvas as clockClearCanvas} from "./clock";
 
 window.$ = $;
@@ -61,11 +61,18 @@ $(document).ready(() => {
         },
         active:function (){
             console.log("DONE LOADING FONTS");
-            doneLoading();
+            doneLoadingFont();
         }
     });
 
     helloRedrawCanvas(canvas, canvasContainer, "LOADING...", "loading");
+
+    //load images
+    function doneLoadingFont(){
+        preLoadImages(christmasBackgrounds, doneLoading);
+        // doneLoading();
+    }
+    
     function doneLoading(){
         helloClearCanvas(canvas, canvasContainer, null);
         activeActivity = "christmas";
@@ -75,6 +82,7 @@ $(document).ready(() => {
         //Navigation
         //
         $("[data-canvas-function]").click(function(){
+
             if(activeClearFunc){
                 activeClearFunc(canvas, canvasContainer, activeRedrawFunc, activeIntervalFunc);
                 activeActivity=null;
@@ -117,5 +125,10 @@ $(document).ready(() => {
                 drawChristmas();
             }
         });
+
+        // $("#navExpand").click(function(){
+        //     $('#navIcon').toggleClass("mdi-arrow-expand-left");
+        //     $('#navIcon').toggleClass("mdi-arrow-expand-right");
+        // });
     }
 });

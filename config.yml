@@ -23,6 +23,15 @@ PATHS:
   assets:
     - "src/assets/**/*"
     - "!src/assets/{img,js,scss}/**/*"
+  bowerCss:
+    - "bower_components/mdi/css/materialdesignicons.min.css"
+    - "bower_components/mdi/css/materialdesignicons.min.css.map"
+  bowerFonts: 
+    - "bower_components/mdi/fonts/materialdesignicons-webfont.eot"
+    - "bower_components/mdi/fonts/materialdesignicons-webfont.svg"
+    - "bower_components/mdi/fonts/materialdesignicons-webfont.ttf"
+    - "bower_components/mdi/fonts/materialdesignicons-webfont.woff"
+    - "bower_components/mdi/fonts/materialdesignicons-webfont.woff2"
   # Paths to Sass libraries, which can then be loaded with @import
   sass:
     - "node_modules/foundation-sites/scss"

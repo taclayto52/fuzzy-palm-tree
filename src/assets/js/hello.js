@@ -180,6 +180,21 @@ function drawPeesha(){
 	}
 }
 
+function preLoadImages(imageArray, cb){
+	const numImages = imageArray.length;
+	var numImagesLoaded = 0;
+
+	imageArray.forEach((image) => {
+		var imgEle = new Image();
+		imgEle.src = image;
+		imgEle.onload = () => {
+			console.log("done loading image: " + image);
+			numImagesLoaded++;
+			if(numImagesLoaded === numImages) cb();
+		}
+	});
+}
+
 function drawBackground(imgSrc){
 	var image = new Image();
 	// image.src = "./assets/img/skeles.gif";
@@ -193,7 +208,7 @@ function sayLoading(canvas, broadcast){
 	// const helloWorld = "Hello!!";
 	var ctx = canvas.getContext("2d");
 
-	// ctx.translate(canvas.width/2, 100);
+	ctx.translate(canvas.width/2, 100);
 
     ctx.font=(canvas.height)*.15 + "px arial";
     ctx.textAlign="center";
@@ -239,4 +254,4 @@ function clearCanvas(canvas, canvasContainer, redrawFunction){
 	document.getElementById('canvas').style.backgroundImage = 'none';
 }
 
-export {redrawCanvas, drawBackground, clearCanvas};
+export {redrawCanvas, drawBackground, clearCanvas, preLoadImages};
