@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Official ZURB Template for Foundation for Sites.",
   "main": "app.js",
-  "engines":{
+  "engines": {
     "node": "6.11.5"
   },
   "scripts": {
@@ -18,6 +18,7 @@
     "foundation-sites": "~6.4.1",
     "jquery": ">=3.0.0",
     "motion-ui": "~1.2.2",
+    "url": "^0.11.0",
     "webfontloader": "^1.6.28",
     "what-input": "^4.1.3"
   },

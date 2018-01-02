@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import whatInput from 'what-input';
+import url from 'url';
 import {redrawCanvas as helloRedrawCanvas, drawBackground, clearCanvas as helloClearCanvas, preLoadImages} from "./hello";
 import {redrawCanvas as clockRedrawCanvas, changeBackgroundColor ,clearCanvas as clockClearCanvas} from "./clock";
 
@@ -43,29 +44,63 @@ $(document).ready(() => {
             christmasBroadcast = "SANTA";
         }
 
+        if(activeRedrawFunc){
+            helloClearCanvas(canvas, canvasContainer, activeRedrawFunc, activeIntervalFunc);
+        }
+
         drawBackground(drawBackGroundImage);
         helloRedrawCanvas(canvas, canvasContainer, christmasBroadcast, "christmas");
         activeRedrawFunc = function(){helloRedrawCanvas(canvas, canvasContainer, christmasBroadcast, "christmas")};
+        activeIntervalFunc = setInterval(activeRedrawFunc, 300);
         window.addEventListener('resize', activeRedrawFunc, false);
 
+        activeClearFunc = helloClearCanvas;
+    }
+
+    function prepareBroadcast(){
+        var currentPathParams = (url.parse(location.href, true)).query;
+        
+        if(currentPathParams.broadcast){
+            console.log("Current path: " + currentPathParams.broadcast);
+            drawBroadcast(currentPathParams.broadcast);
+        }
+        else{
+            console.log("No path specified");
+            $("#broadcastContainer").show();
+        }
+
+        activeClearFunc = helloClearCanvas;
+    }
+
+    function drawBroadcast(userBroadcast){
+        helloRedrawCanvas(canvas, canvasContainer, userBroadcast, "broadcast");
+        activeRedrawFunc = function(){helloRedrawCanvas(canvas, canvasContainer, userBroadcast, "broadcast")};
+        window.addEventListener('resize', activeRedrawFunc, false);
+        
         activeClearFunc = helloClearCanvas;
     }
 
     //
     // Default Behavior
     //
-    WebFont.load({
-        custom: {
-            families: ['Bad Script'], 
-            urls: ['./assets/css/app.css']
-        },
-        active:function (){
-            console.log("DONE LOADING FONTS");
-            doneLoadingFont();
-        }
-    });
-
-    helloRedrawCanvas(canvas, canvasContainer, "LOADING...", "loading");
+    var currentPath = url.parse(location.href, true);
+    if(currentPath.query.broadcast){
+        prepareBroadcast();
+    }
+    else{  
+        WebFont.load({
+            custom: {
+                families: ['Bad Script'], 
+                urls: ['./assets/css/app.css']
+            },
+            active:function (){
+                console.log("DONE LOADING FONTS");
+                doneLoadingFont();
+            }
+        });
+    
+        helloRedrawCanvas(canvas, canvasContainer, "LOADING...", "loading");
+    }
 
     //load images
     function doneLoadingFont(){
@@ -115,6 +150,11 @@ $(document).ready(() => {
 
                 activeClearFunc = clockClearCanvas;
             }
+
+            else if($(this).attr("data-canvas-function") === "broadcast"){
+                activeActivity = "broadcast";
+                prepareBroadcast();
+            }
         });
 
         //
@@ -123,6 +163,18 @@ $(document).ready(() => {
         $("#canvasContainer").click(function(){
             if(activeActivity === "christmas"){
                 drawChristmas();
+            }
+        });
+
+        $("#broadcastInput").keypress(function(event) {
+            //react to Enter Key
+            if(event.key === "Enter"){
+                var currentPath = url.parse(location.href, true);
+                currentPath.query.broadcast = $("#broadcastInput").val();
+                history.replaceState(null, "User Entry", url.format(currentPath));
+                
+                helloClearCanvas(canvas, canvasContainer, activeRedrawFunc, activeIntervalFunc);
+                prepareBroadcast();
             }
         });
 

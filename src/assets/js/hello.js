@@ -9,6 +9,8 @@
 // redrawCanvas();
 // drawSkeles();
 
+var colorOffset = 0;
+
 function redrawCanvas(canvas, canvasContainer, broadcast, drawPattern){
 	var ctx = canvas.getContext("2d");
 
@@ -142,7 +144,7 @@ function sayChristmasWrapAround(canvas, broadcast){
 
 	var xPos = 0;
 	var textColor = 0;
-	var colorIndex = 0;
+	var colorIndex = colorOffset;
 	for(var i=0; i< numColsOfText; i++){
 		var yPos = 0;
 		var alphaValue = 1;
@@ -170,6 +172,8 @@ function sayChristmasWrapAround(canvas, broadcast){
 
 		xPos += xOffset;
 	}
+
+	colorOffset = (colorOffset + 1)%textColorsArray.length;
 }
 
 function drawPeesha(){
@@ -242,13 +246,15 @@ function sayLoading(canvas, broadcast){
     // ctx.fillText("Hello!", 150, 50);
 }
 
-function clearCanvas(canvas, canvasContainer, redrawFunction){
+function clearCanvas(canvas, canvasContainer, redrawFunction, activeIntervalFunction){
 	var ctx = canvas.getContext("2d");
 	
 	canvas.width = canvasContainer.offsetWidth;
 	canvas.height = canvasContainer.offsetHeight;
 
 	if(redrawFunction) window.removeEventListener('resize', redrawFunction, false);
+	if(activeIntervalFunction) clearInterval(activeIntervalFunction);
+	$("#broadcastContainer").hide();
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	document.getElementById('canvas').style.backgroundImage = 'none';

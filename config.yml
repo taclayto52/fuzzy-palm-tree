@@ -23,6 +23,8 @@ PATHS:
   assets:
     - "src/assets/**/*"
     - "!src/assets/{img,js,scss}/**/*"
+  bowerJS:
+    - "bower_components/js-url/url.min.js"
   bowerCss:
     - "bower_components/mdi/css/materialdesignicons.min.css"
     - "bower_components/mdi/css/materialdesignicons.min.css.map"
@@ -39,4 +41,3 @@ PATHS:
   # Paths to JavaScript entry points for webpack to bundle modules
   entries:
     - "src/assets/js/app.js"
-    - "src/assets/js/hello.js"

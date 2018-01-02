@@ -59,6 +59,11 @@ function copyBowerFonts() {
     .pipe(gulp.dest(PATHS.dist+'/assets/fonts'));
 }
 
+// function copyBowerJS() {
+//   return gulp.src(PATHS.bowerJS)
+//     .pipe(gulp.dest(PATHS.dist+'/assets/js'));
+// }
+
 // Copy page templates into finished HTML files
 function pages() {
   return gulp.src('src/pages/**/*.{html,hbs,handlebars}')
