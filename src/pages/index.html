@@ -11,9 +11,10 @@
 <div id="canvasContainer" class="off-canvas-content cell 12" data-off-canvas-content>
   <!-- <div type="button" class="button" data-toggle="offCanvasMenu">Slide Menu</div> -->
   <button id="navExpand" class="button fade non-canvas" data-toggle="offCanvasMenu"><i id="navIcon" class="mdi mdi-arrow-expand-left mdi-26px"></i></button>
+  <button id="undoGif" class="button fade non-canvas" style="display:none"><i class="mdi mdi-undo-variant mdi-30px"></i></button>
   <!-- <button id="clock-toggle-button" class="button non-canvas" style="display:inline">Tick Tock</button> -->
-  <div id="broadcastContainer" class="medium-6 cell" style="display:none">
-    <input id="broadcastInput" type="text" placeholder="Enter broadcast!">
+  <div id="broadcastContainer" class="grid-x grid-margin-x" style="display:none">
+    <input id="broadcastInput" class="large-offset-2 shrink cell" type="text" placeholder="Enter broadcast!">
   </div>
 
   <canvas id="canvas" display="block">

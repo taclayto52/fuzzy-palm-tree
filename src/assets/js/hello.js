@@ -11,7 +11,7 @@
 
 var colorOffset = 0;
 
-function redrawCanvas(canvas, canvasContainer, broadcast, drawPattern){
+function redrawCanvas(canvas, canvasContainer, broadcast, drawPattern, data){
 	var ctx = canvas.getContext("2d");
 
 	canvas.width = canvasContainer.offsetWidth;
@@ -35,6 +35,9 @@ function redrawCanvas(canvas, canvasContainer, broadcast, drawPattern){
 	if(drawPattern === "christmas"){
 		sayChristmasWrapAround(canvas, broadcast);
 	}
+	else if(drawPattern === "broadcast"){
+		sayHelloWrapAround(canvas, broadcast, data.numOfRows);
+	}
 	else if(drawPattern === "loading"){
 		sayLoading(canvas, broadcast);
 	}
@@ -46,11 +49,11 @@ function printCanvasSize(canvas){
 	console.log(canvas.width + "x" + canvas.height);
 }
 
-function sayHelloWrapAround(canvas, broadcast){
+function sayHelloWrapAround(canvas, broadcast, numOfRows){
 	var ctx = canvas.getContext("2d");
 
 	// const helloWorld = "SPOOKY";
-	const numOfRows = 10;
+	if(!numOfRows) numOfRows = 10;
 	const minNumCols = 2;
 
 	ctx.shadowColor = 0;
@@ -199,6 +202,18 @@ function preLoadImages(imageArray, cb){
 	});
 }
 
+function preLoadImage(imageUrl){
+	return new Promise((resolve, reject) => {
+		var imgEle = new Image();
+		imgEle.src = imageUrl;
+
+		imgEle.onload = () =>{
+			console.log("Done loading: " + imageUrl);
+			resolve(imageUrl)
+		};
+	});
+}
+
 function drawBackground(imgSrc){
 	var image = new Image();
 	// image.src = "./assets/img/skeles.gif";
@@ -255,9 +270,10 @@ function clearCanvas(canvas, canvasContainer, redrawFunction, activeIntervalFunc
 	if(redrawFunction) window.removeEventListener('resize', redrawFunction, false);
 	if(activeIntervalFunction) clearInterval(activeIntervalFunction);
 	$("#broadcastContainer").hide();
+	$("#undoGif").hide();
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	document.getElementById('canvas').style.backgroundImage = 'none';
 }
 
-export {redrawCanvas, drawBackground, clearCanvas, preLoadImages};
+export {redrawCanvas, drawBackground, clearCanvas, preLoadImages, preLoadImage};

@@ -1,8 +1,9 @@
 import $ from 'jquery';
 import whatInput from 'what-input';
 import url from 'url';
-import {redrawCanvas as helloRedrawCanvas, drawBackground, clearCanvas as helloClearCanvas, preLoadImages} from "./hello";
+import {redrawCanvas as helloRedrawCanvas, drawBackground, clearCanvas as helloClearCanvas, preLoadImages, preLoadImage} from "./hello";
 import {redrawCanvas as clockRedrawCanvas, changeBackgroundColor ,clearCanvas as clockClearCanvas} from "./clock";
+import {searchGiphy} from "./giphy";
 
 window.$ = $;
 
@@ -32,6 +33,21 @@ var christmasBackgroundIndex = -1;
 
 $(document).foundation();
 $(document).ready(() => {
+    function loadChristmas(){
+        WebFont.load({
+            custom: {
+                families: ['Bad Script'], 
+                urls: ['./assets/css/app.css']
+            },
+            active:function (){
+                console.log("DONE LOADING FONTS");
+                doneLoadingChristmasFont();
+            }
+        });
+
+        helloRedrawCanvas(canvas, canvasContainer, "LOADING...", "loading");
+    }
+
     function drawChristmas(){
         var christmasBroadcast = "HO HO";
         
@@ -58,23 +74,42 @@ $(document).ready(() => {
     }
 
     function prepareBroadcast(){
+        helloRedrawCanvas(canvas, canvasContainer, "LOADING...", "loading");
+
         var currentPathParams = (url.parse(location.href, true)).query;
         
         if(currentPathParams.broadcast){
             console.log("Current path: " + currentPathParams.broadcast);
-            drawBroadcast(currentPathParams.broadcast);
+            searchGiphy(currentPathParams.broadcast)
+                .then((imageUrl) => {
+                    console.log("preload: " + imageUrl);
+                    preLoadImage(imageUrl)
+                        .then( (broadcastBackgroundImage) => {
+                            console.log("draw: " + broadcastBackgroundImage);
+                            drawBroadcast(currentPathParams.broadcast, broadcastBackgroundImage)
+                        });
+                    });
         }
         else{
             console.log("No path specified");
+            helloClearCanvas(canvas, canvasContainer, activeRedrawFunc);
             $("#broadcastContainer").show();
         }
 
         activeClearFunc = helloClearCanvas;
     }
 
-    function drawBroadcast(userBroadcast){
-        helloRedrawCanvas(canvas, canvasContainer, userBroadcast, "broadcast");
-        activeRedrawFunc = function(){helloRedrawCanvas(canvas, canvasContainer, userBroadcast, "broadcast")};
+    function drawBroadcast(userBroadcast, imageUrl){
+        helloClearCanvas(canvas, canvasContainer, activeRedrawFunc, activeIntervalFunc);
+        if(imageUrl){
+            console.log(imageUrl);
+            drawBackground(imageUrl);
+        }
+
+        activeActivity = "broadcastDisplay";
+        $("#undoGif").show();
+        helloRedrawCanvas(canvas, canvasContainer, userBroadcast, "broadcast", {"numOfRows": 5});
+        activeRedrawFunc = function(){helloRedrawCanvas(canvas, canvasContainer, userBroadcast, "broadcast", {"numOfRows": 5})};
         window.addEventListener('resize', activeRedrawFunc, false);
         
         activeClearFunc = helloClearCanvas;
@@ -88,99 +123,103 @@ $(document).ready(() => {
         prepareBroadcast();
     }
     else{  
-        WebFont.load({
-            custom: {
-                families: ['Bad Script'], 
-                urls: ['./assets/css/app.css']
-            },
-            active:function (){
-                console.log("DONE LOADING FONTS");
-                doneLoadingFont();
-            }
-        });
-    
-        helloRedrawCanvas(canvas, canvasContainer, "LOADING...", "loading");
+        //default page to load
+        prepareBroadcast(); //working on broadcast for now
     }
 
-    //load images
-    function doneLoadingFont(){
-        preLoadImages(christmasBackgrounds, doneLoading);
-        // doneLoading();
+    function doneLoadingChristmasFont(){
+        preLoadImages(christmasBackgrounds, doneLoadingChristmas);
     }
-    
-    function doneLoading(){
+
+    function doneLoadingChristmas(){
         helloClearCanvas(canvas, canvasContainer, null);
         activeActivity = "christmas";
         drawChristmas();
-
-        //
-        //Navigation
-        //
-        $("[data-canvas-function]").click(function(){
-
-            if(activeClearFunc){
-                activeClearFunc(canvas, canvasContainer, activeRedrawFunc, activeIntervalFunc);
-                activeActivity=null;
-            }
-
-            console.log("Load " + $(this).attr("data-canvas-function") +  "!");
-
-            if($(this).attr("data-canvas-function") === "spooky"){
-                helloRedrawCanvas(canvas, canvasContainer, "SPOOKY", "default");
-                drawBackground("./assets/img/skeles.gif");
-
-                activeRedrawFunc = function(){helloRedrawCanvas(canvas, canvasContainer, "SPOOKY", "default")};
-                window.addEventListener('resize', activeRedrawFunc, false);
-
-                activeClearFunc = helloClearCanvas;
-            }
-
-            else if($(this).attr("data-canvas-function") === "christmas"){
-                activeActivity = "christmas";
-                drawChristmas();
-            }
-            
-            else if($(this).attr("data-canvas-function") === "clock"){
-                changeBackgroundColor();
-                clockRedrawCanvas(canvas, canvasContainer);
-
-                activeRedrawFunc = function(){clockRedrawCanvas(canvas, canvasContainer)};
-                window.addEventListener('resize', activeRedrawFunc, false);
-                activeIntervalFunc = setInterval(activeRedrawFunc, 1000);
-
-                activeClearFunc = clockClearCanvas;
-            }
-
-            else if($(this).attr("data-canvas-function") === "broadcast"){
-                activeActivity = "broadcast";
-                prepareBroadcast();
-            }
-        });
-
-        //
-        // Interactivity
-        //
-        $("#canvasContainer").click(function(){
-            if(activeActivity === "christmas"){
-                drawChristmas();
-            }
-        });
-
-        $("#broadcastInput").keypress(function(event) {
-            //react to Enter Key
-            if(event.key === "Enter"){
-                var currentPath = url.parse(location.href, true);
-                currentPath.query.broadcast = $("#broadcastInput").val();
-                history.replaceState(null, "User Entry", url.format(currentPath));
-                
-                helloClearCanvas(canvas, canvasContainer, activeRedrawFunc, activeIntervalFunc);
-                prepareBroadcast();
-            }
-        });
-
-        // $("#navExpand").click(function(){
-        //     $('#navIcon').toggleClass("mdi-arrow-expand-left");
-        //     $('#navIcon').toggleClass("mdi-arrow-expand-right");
-        // });
     }
+
+    //
+    //Navigation
+    //
+    $("[data-canvas-function]").click(function(){
+
+        if(activeClearFunc){
+            activeClearFunc(canvas, canvasContainer, activeRedrawFunc, activeIntervalFunc);
+            activeActivity=null;
+        }
+
+        console.log("Load " + $(this).attr("data-canvas-function") +  "!");
+
+        if($(this).attr("data-canvas-function") === "spooky"){
+            helloRedrawCanvas(canvas, canvasContainer, "SPOOKY", "default");
+            drawBackground("./assets/img/skeles.gif");
+
+            activeRedrawFunc = function(){helloRedrawCanvas(canvas, canvasContainer, "SPOOKY", "default")};
+            window.addEventListener('resize', activeRedrawFunc, false);
+
+            activeClearFunc = helloClearCanvas;
+        }
+
+        else if($(this).attr("data-canvas-function") === "christmas"){
+            activeActivity = "christmas";
+            drawChristmas();
+        }
+        
+        else if($(this).attr("data-canvas-function") === "clock"){
+            changeBackgroundColor();
+            clockRedrawCanvas(canvas, canvasContainer);
+
+            activeRedrawFunc = function(){clockRedrawCanvas(canvas, canvasContainer)};
+            window.addEventListener('resize', activeRedrawFunc, false);
+            activeIntervalFunc = setInterval(activeRedrawFunc, 1000);
+
+            activeClearFunc = clockClearCanvas;
+        }
+
+        else if($(this).attr("data-canvas-function") === "broadcast"){
+            activeActivity = "broadcast";
+            prepareBroadcast();
+        }
+    });
+
+    //
+    // Interactivity
+    //
+    $("#canvasContainer").click(function(){
+        if(activeActivity === "christmas"){
+            drawChristmas();
+        }
+        else if(activeActivity === "broadcastDisplay"){
+            prepareBroadcast();
+        }
+    });
+
+    $("#undoGif").click(function(event){
+        event.stopPropagation();
+
+        var currentPath = url.parse(location.href, false);
+        // var newPath = {};
+        delete currentPath.search;
+        delete currentPath.query;
+        history.replaceState(null, "User Entry", url.format(currentPath));
+
+        activeActivity="broadcast";
+        prepareBroadcast();
+    });
+
+    $("#broadcastInput").keypress(function(event) {
+        //react to Enter Key
+        if(event.key === "Enter"){
+            var currentPath = url.parse(location.href, true);
+            currentPath.query.broadcast = $("#broadcastInput").val();
+            history.replaceState(null, "User Entry", url.format(currentPath));
+            
+            helloClearCanvas(canvas, canvasContainer, activeRedrawFunc, activeIntervalFunc);
+            prepareBroadcast();
+        }
+    });
+
+    // $("#navExpand").click(function(){
+    //     $('#navIcon').toggleClass("mdi-arrow-expand-left");
+    //     $('#navIcon').toggleClass("mdi-arrow-expand-right");
+    // });
 });
