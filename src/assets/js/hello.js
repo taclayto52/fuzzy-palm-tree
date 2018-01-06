@@ -36,7 +36,7 @@ function redrawCanvas(canvas, canvasContainer, broadcast, drawPattern, data){
 		sayChristmasWrapAround(canvas, broadcast);
 	}
 	else if(drawPattern === "broadcast"){
-		sayHelloWrapAround(canvas, broadcast, data.numOfRows);
+		sayHelloWrapAroundNullZone(canvas, broadcast, data.numOfRows, data.imgEle);
 	}
 	else if(drawPattern === "loading"){
 		sayLoading(canvas, broadcast);
@@ -49,17 +49,34 @@ function printCanvasSize(canvas){
 	console.log(canvas.width + "x" + canvas.height);
 }
 
-function sayHelloWrapAround(canvas, broadcast, numOfRows){
+function sayHelloWrapAroundNullZone(canvas, broadcast, numOfRows, imgEle){
+	// sayHelloWrapAround(canvas, broadcast, numOfRows);
+	sayChristmasWrapAround(canvas, broadcast, 5, "Lucida Sans Unicode");
+	if(imgEle){
+		console.log("Width: " + imgEle.width + ", Height: " +imgEle.height);
+		var ctx = canvas.getContext("2d");
+		ctx.translate(canvas.width/2, canvas.height/2);
+		
+		var rectX = -1*(imgEle.width/2);
+		var rectY = -1*(imgEle.height/2);
+		var rectWidth = imgEle.width;
+		var rectHeight = imgEle.height;
+		ctx.clearRect(rectX, rectY, rectWidth, rectHeight);
+	}
+}
+
+function sayHelloWrapAround(canvas, broadcast, numOfRows, fontFamily){
 	var ctx = canvas.getContext("2d");
 
 	// const helloWorld = "SPOOKY";
 	if(!numOfRows) numOfRows = 10;
-	const minNumCols = 2;
+	const minNumCols = 3;
 
 	ctx.shadowColor = 0;
 
 	var fontSize = canvas.height*(1/numOfRows);
-    ctx.font=fontSize + "px Lucida Sans Unicode";
+	if(!fontFamily) fontFamily = "Lucida Sans Unicode";
+    ctx.font=fontSize + "px " + fontFamily;
     ctx.textAlign="start";
 	ctx.textBaseline="top";
 	var textAlphaDelta = 0;
@@ -109,17 +126,18 @@ function sayHelloWrapAround(canvas, broadcast, numOfRows){
 	}
 }
 
-function sayChristmasWrapAround(canvas, broadcast){
+function sayChristmasWrapAround(canvas, broadcast, numOfRows, fontFamily){
 	var ctx = canvas.getContext("2d");
 
 	// const helloWorld = "SPOOKY";
-	const numOfRows = 5;
+	if(!numOfRows) numOfRows = 5;
 	const minNumCols = 2;
 
 	ctx.shadowColor = 0;
 
 	var fontSize = canvas.height*(1/numOfRows);
-    ctx.font=fontSize + "px Bad Script";
+	if(!fontFamily) fontFamily = "Bad Script"
+    ctx.font=fontSize + "px " + fontFamily;
     ctx.textAlign="start";
 	ctx.textBaseline="top";
 	var textAlphaDelta = 0;
@@ -208,18 +226,20 @@ function preLoadImage(imageUrl){
 		imgEle.src = imageUrl;
 
 		imgEle.onload = () =>{
-			console.log("Done loading: " + imageUrl);
-			resolve(imageUrl)
+			console.log("Done loading: " + imgEle);
+			resolve(imgEle)
 		};
 	});
 }
 
-function drawBackground(imgSrc){
+function drawBackground(imgSrc, imgRepeat, imgPosition){
 	var image = new Image();
 	// image.src = "./assets/img/skeles.gif";
 	image.src = imgSrc;
 	image.onload = () => {
 		document.getElementById('canvas').style.backgroundImage = "url("+image.src+")";
+		if(imgRepeat) document.getElementById('canvas').style.backgroundRepeat = imgRepeat;
+		if(imgPosition) document.getElementById('canvas').style.backgroundPosition = imgPosition;
 	}
 }
 

@@ -74,6 +74,7 @@ $(document).ready(() => {
     }
 
     function prepareBroadcast(){
+        if(activeIntervalFunc) clearInterval(activeIntervalFunc);
         helloRedrawCanvas(canvas, canvasContainer, "LOADING...", "loading");
 
         var currentPathParams = (url.parse(location.href, true)).query;
@@ -92,24 +93,25 @@ $(document).ready(() => {
         }
         else{
             console.log("No path specified");
-            helloClearCanvas(canvas, canvasContainer, activeRedrawFunc);
+            helloClearCanvas(canvas, canvasContainer, activeRedrawFunc, activeIntervalFunc);
             $("#broadcastContainer").show();
         }
 
         activeClearFunc = helloClearCanvas;
     }
 
-    function drawBroadcast(userBroadcast, imageUrl){
+    function drawBroadcast(userBroadcast, imgEle){
         helloClearCanvas(canvas, canvasContainer, activeRedrawFunc, activeIntervalFunc);
-        if(imageUrl){
-            console.log(imageUrl);
-            drawBackground(imageUrl);
+        if(imgEle.src){
+            console.log(imgEle.src);
+            drawBackground(imgEle.src, "repeat", "center");
         }
 
         activeActivity = "broadcastDisplay";
         $("#undoGif").show();
-        helloRedrawCanvas(canvas, canvasContainer, userBroadcast, "broadcast", {"numOfRows": 5});
-        activeRedrawFunc = function(){helloRedrawCanvas(canvas, canvasContainer, userBroadcast, "broadcast", {"numOfRows": 5})};
+        helloRedrawCanvas(canvas, canvasContainer, userBroadcast, "broadcast", {"numOfRows": 5, "imgEle": imgEle});
+        activeRedrawFunc = function(){helloRedrawCanvas(canvas, canvasContainer, userBroadcast, "broadcast", {"numOfRows": 5, "imgEle": imgEle})};
+        activeIntervalFunc = setInterval(activeRedrawFunc, 300);
         window.addEventListener('resize', activeRedrawFunc, false);
         
         activeClearFunc = helloClearCanvas;
