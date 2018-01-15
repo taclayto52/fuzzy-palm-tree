@@ -24,7 +24,7 @@ var apiSearchParams = {
     lang: "en"
 }
 
-function searchGiphy(searchTerm){
+function searchGiphy(searchTerm, canvas){
     return new Promise((resolve, reject) => {
         var urlObject = {
             protocol: apiProtocol,
@@ -41,7 +41,16 @@ function searchGiphy(searchTerm){
                 //TODO get static not found gif
                 gifUrl = "./assets/img/not_found.gif";
             }else{
-                var gifData = respData.data[currentImageIndex++].images[gifSizes[0]];
+                if(currentImageIndex >= respData.pagination.count) currentImageIndex = 0;
+
+                var gifSizesIndex = 0;
+                var gifData = respData.data[currentImageIndex++].images[gifSizes[gifSizesIndex]];
+                while((gifData.height > canvas.height) || (gifData.width > canvas.width)){
+                    gifData = respData.data[currentImageIndex].images[gifSizes[gifSizesIndex++]];
+                    if(gifSizesIndex === gifSizes.length){
+                        break;
+                    }
+                }
                 gifUrl = gifData.url;
             }
             

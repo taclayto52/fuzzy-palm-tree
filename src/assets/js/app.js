@@ -81,7 +81,7 @@ $(document).ready(() => {
         
         if(currentPathParams.broadcast){
             console.log("Current path: " + currentPathParams.broadcast);
-            searchGiphy(currentPathParams.broadcast)
+            searchGiphy(currentPathParams.broadcast, canvas)
                 .then((imageUrl) => {
                     console.log("preload: " + imageUrl);
                     preLoadImage(imageUrl)

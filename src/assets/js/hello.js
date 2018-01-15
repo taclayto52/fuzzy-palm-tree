@@ -36,7 +36,7 @@ function redrawCanvas(canvas, canvasContainer, broadcast, drawPattern, data){
 		sayChristmasWrapAround(canvas, broadcast);
 	}
 	else if(drawPattern === "broadcast"){
-		sayHelloWrapAroundNullZone(canvas, broadcast, data.numOfRows, data.imgEle);
+		sayHelloNullZone(canvas, broadcast, data.numOfRows, data.imgEle);
 	}
 	else if(drawPattern === "loading"){
 		sayLoading(canvas, broadcast);
@@ -49,12 +49,13 @@ function printCanvasSize(canvas){
 	console.log(canvas.width + "x" + canvas.height);
 }
 
-function sayHelloWrapAroundNullZone(canvas, broadcast, numOfRows, imgEle){
+function sayHelloNullZone(canvas, broadcast, numOfRows, imgEle){
 	// sayHelloWrapAround(canvas, broadcast, numOfRows);
-	sayChristmasWrapAround(canvas, broadcast, 5, "Lucida Sans Unicode");
+	sayHelloCenterWrapAroundFlash(canvas, broadcast, "Lucida Sans Unicode", imgEle);
 	if(imgEle){
-		console.log("Width: " + imgEle.width + ", Height: " +imgEle.height);
 		var ctx = canvas.getContext("2d");
+		// TODO fix this shit
+		ctx.translate(-canvas.width/2, -canvas.height/2);
 		ctx.translate(canvas.width/2, canvas.height/2);
 		
 		var rectX = -1*(imgEle.width/2);
@@ -123,6 +124,81 @@ function sayHelloWrapAround(canvas, broadcast, numOfRows, fontFamily){
 		}
 
 		xPos += xOffset;
+	}
+}
+
+function sayHelloCenterWrapAroundFlash(canvas, broadcast, fontFamily, imgEle){
+	var ctx = canvas.getContext("2d");
+	ctx.translate(canvas.width/2, canvas.height/2);
+
+	ctx.shadowColor = 0;
+
+	var fontSize = imgEle.height;
+	if(!fontFamily) fontFamily = "Bad Script"
+    ctx.font=fontSize + "px " + fontFamily;
+    ctx.textAlign="center";
+	ctx.textBaseline="top";
+	var textAlphaDelta = 0;
+
+	//calculate correct width 
+	var textWidth = ctx.measureText(broadcast).width;
+	var textSizeConversion = textWidth/fontSize;
+	fontSize=imgEle.width/textSizeConversion;
+	ctx.font=fontSize + "px " + fontFamily;
+	console.log("Font height: " + fontSize + ", Font width: " +textWidth);
+
+	var textColor = 0;
+	var colorIndex = colorOffset;
+
+	var textColorsArray = ["hsla(125, 100%, 50%, 1)",
+						   "hsla(180, 100%, 100%, 1)",
+						   "hsla(360, 100%, 50%, 1)"];
+
+	//Center column
+	//Above image
+	ctx.textBaseline="alphabetic";
+	wrapAroundFlashUp(canvas, broadcast, fontSize, colorIndex, textColorsArray, 0, -1*(imgEle.height/2));
+
+	//Below image
+	ctx.textBaseline="hanging";
+	wrapAroundFlashDown(canvas, broadcast, fontSize, colorIndex, textColorsArray, 0, (imgEle.height/2))
+
+	//Right of image
+	ctx.textBaseline="middle";
+	for(var xOffset=imgEle.width; xOffset<(canvas.width/2); xOffset+=imgEle.width){
+		wrapAroundFlashDown(canvas, broadcast, fontSize, colorIndex, textColorsArray, xOffset, 0);
+		wrapAroundFlashUp(canvas, broadcast, fontSize, colorIndex, textColorsArray, xOffset, 0);
+	}
+
+	//Left of image
+	for(var xOffset=-1*imgEle.width; Math.abs(xOffset)<(canvas.width/2); xOffset-=imgEle.width){
+		wrapAroundFlashDown(canvas, broadcast, fontSize, colorIndex, textColorsArray, xOffset, 0);
+		wrapAroundFlashUp(canvas, broadcast, fontSize, colorIndex, textColorsArray, xOffset, 0);
+	}
+	
+	colorOffset = (colorOffset + 1)%textColorsArray.length;
+
+}
+
+function wrapAroundFlashUp(canvas, broadcast, fontSize, colorIndex, textColorsArray, startXPos, startYPos){
+	var ctx = canvas.getContext("2d");
+
+	for(var yPos=startYPos; Math.abs(yPos)<(canvas.height/2); yPos-=fontSize){
+		ctx.fillStyle=textColorsArray[colorIndex];
+
+		ctx.fillText(broadcast, startXPos, yPos);
+		colorIndex = (colorIndex+1)%textColorsArray.length;
+	}
+}
+
+function wrapAroundFlashDown(canvas, broadcast, fontSize, colorIndex, textColorsArray, startXPos, startYPos){
+	var ctx = canvas.getContext("2d");
+
+	for(var yPos=startYPos; Math.abs(yPos)<(canvas.height/2); yPos+=fontSize){
+		ctx.fillStyle=textColorsArray[colorIndex];
+
+		ctx.fillText(broadcast, startXPos, yPos);
+		colorIndex = (colorIndex+1)%textColorsArray.length;
 	}
 }
 
