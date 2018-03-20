@@ -4,6 +4,7 @@ import url from 'url';
 import {redrawCanvas as helloRedrawCanvas, drawBackground, clearCanvas as helloClearCanvas, preLoadImages, preLoadImage} from "./hello";
 import {redrawCanvas as clockRedrawCanvas, changeBackgroundColor ,clearCanvas as clockClearCanvas} from "./clock";
 import {searchGiphy} from "./giphy";
+import {exports as siteConstants} from "./lib/constants";
 
 window.$ = $;
 
@@ -12,11 +13,7 @@ import Foundation from 'foundation-sites';
 // the line below
 //import './lib/foundation-explicit-pieces';
 
-const christmasBackgrounds = ['./assets/img/christmas/buddy.gif',
-                              './assets/img/christmas/makinItRain.gif',
-                              './assets/img/christmas/trippy_small.gif',
-                              './assets/img/christmas/badKitty.gif',
-                              './assets/img/christmas/goodKitty.gif'];
+const christmasBackgrounds = siteConstants.constants.christmasGifs;
 // const christmasBackgrounds = ['./assets/img/christmas/buddy.gif'];
 var WebFont = require('webfontloader');
 
@@ -75,7 +72,7 @@ $(document).ready(() => {
 
     function prepareBroadcast(){
         if(activeIntervalFunc) clearInterval(activeIntervalFunc);
-        helloRedrawCanvas(canvas, canvasContainer, "LOADING...", "loading");
+        helloRedrawCanvas(canvas, canvasContainer, siteConstants.getNextLoadingMessage(), "loading");
 
         var currentPathParams = (url.parse(location.href, true)).query;
         
@@ -109,6 +106,8 @@ $(document).ready(() => {
 
         activeActivity = "broadcastDisplay";
         $("#undoGif").show();
+        // could be an issue here where the class is never removed? seems to be working for now
+        $("#undoGif").addClass("pulse-flash-on");
         helloRedrawCanvas(canvas, canvasContainer, userBroadcast, "broadcast", {"numOfRows": 5, "imgEle": imgEle});
         activeRedrawFunc = function(){helloRedrawCanvas(canvas, canvasContainer, userBroadcast, "broadcast", {"numOfRows": 5, "imgEle": imgEle})};
         activeIntervalFunc = setInterval(activeRedrawFunc, 300);

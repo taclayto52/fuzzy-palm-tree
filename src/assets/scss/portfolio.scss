@@ -1,3 +1,15 @@
+@import "settings";
+
+$button-transition-speed: 600ms;
+$button-animation-iteration: 3;
+
+@media screen and (max-width: 480px) {
+    #broadcastInput{
+        font-size: rem-calc(32);
+        height: rem-calc(32);
+    }
+}
+
 #canvasContainer, html, body{
     width:100%;
     height:100%;
@@ -11,7 +23,7 @@
     border-width: 0px 0px 1px 0px;
 }
 #broadcastInput:focus{
-    border-width: 1px 1px 1px 1px;
+    // border-width: 1px 1px 1px 1px;
     border-color: $light-gray;
 }
 
@@ -29,6 +41,10 @@ canvas {
     z-index: 1;
 }
 
+.button{
+    font-size: 1.5rem;
+}
+
 .button.fade{
     color: rgba($color: white, $alpha: .25);
 }
@@ -36,6 +52,26 @@ canvas {
 .button.fade:hover{
     color: rgba($color: white, $alpha: 1);
     background-color: rgba($color: black, $alpha: 1.0);
+}
+
+.button.pulse-flash-on{
+    animation-name: buttonFlash;
+    animation-duration: $button-transition-speed;
+    animation-iteration-count: $button-animation-iteration;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes buttonFlash{
+    0%{
+        background-color: map-get($foundation-palette, "fade");
+    }
+    50%{
+        background-color: rgba($color: yellow, $alpha: 1.0);
+        color: rgba($color: black, $alpha: 1.0);
+    }
+    100%{
+        background-color: map-get($foundation-palette, "fade");
+    }
 }
 
 /* cyrillic */

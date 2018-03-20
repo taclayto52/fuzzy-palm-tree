@@ -150,9 +150,15 @@ function sayHelloCenterWrapAroundFlash(canvas, broadcast, fontFamily, imgEle){
 	var textColor = 0;
 	var colorIndex = colorOffset;
 
-	var textColorsArray = ["hsla(125, 100%, 50%, 1)",
+	// create text color array
+	const textColorDelta = 30;
+	let textColorsArray = [];
+	for(var i=0; i<360; i=i+textColorDelta){
+		textColorsArray.push("hsla(" + i + ", 100%, 50%, 1)");
+	}
+	/* var textColorsArray = ["hsla(125, 100%, 50%, 1)",
 						   "hsla(180, 100%, 100%, 1)",
-						   "hsla(360, 100%, 50%, 1)"];
+						   "hsla(360, 100%, 50%, 1)"]; */
 
 	//Center column
 	//Above image
