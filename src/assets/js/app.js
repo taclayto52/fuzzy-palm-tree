@@ -3,7 +3,7 @@ import whatInput from 'what-input';
 import url from 'url';
 import {redrawCanvas as helloRedrawCanvas, drawBackground, clearCanvas as helloClearCanvas, preLoadImages, preLoadImage} from "./hello";
 import {redrawCanvas as clockRedrawCanvas, changeBackgroundColor ,clearCanvas as clockClearCanvas} from "./clock";
-import {searchGiphy} from "./giphy";
+import {searchGiphy, getCurrentImageUrl as getCurrentGiphyLink} from "./giphy";
 import {exports as siteConstants} from "./lib/constants";
 
 window.$ = $;
@@ -76,16 +76,16 @@ $(document).ready(() => {
 
         var currentPathParams = (url.parse(location.href, true)).query;
         
-        if(currentPathParams.broadcast){
+        if(currentPathParams.share && currentPathParams.broadcast){
+            console.log('Share Direct Image! url:', currentPathParams.share);
+            _preloadImageAndDrawBroadCast('https://' + currentPathParams.share, currentPathParams.broadcast);
+        }
+        else if(currentPathParams.broadcast){
             console.log("Current path: " + currentPathParams.broadcast);
             searchGiphy(currentPathParams.broadcast, canvas)
                 .then((imageUrl) => {
                     console.log("preload: " + imageUrl);
-                    preLoadImage(imageUrl)
-                        .then( (broadcastBackgroundImage) => {
-                            console.log("draw: " + broadcastBackgroundImage);
-                            drawBroadcast(currentPathParams.broadcast, broadcastBackgroundImage)
-                        });
+                    _preloadImageAndDrawBroadCast(imageUrl, currentPathParams.broadcast);
                     });
         }
         else{
@@ -95,6 +95,14 @@ $(document).ready(() => {
         }
 
         activeClearFunc = helloClearCanvas;
+
+        function _preloadImageAndDrawBroadCast(imageUrl, broadCastMessage){
+            preLoadImage(imageUrl)
+                .then( (broadcastBackgroundImage) => {
+                    console.log("draw: " + broadcastBackgroundImage);
+                    drawBroadcast(broadCastMessage, broadcastBackgroundImage)
+                });
+        }
     }
 
     function drawBroadcast(userBroadcast, imgEle){
@@ -215,6 +223,17 @@ $(document).ready(() => {
 
         activeActivity="broadcast";
         prepareBroadcast();
+    });
+
+    $("#shareButton").click(function(event){
+        // removed because it broke compatibility with modal
+        // event.stopPropagation();
+
+        console.log('share button clicked - share:', getCurrentGiphyLink());
+        let shareGiphyLink = getCurrentGiphyLink();
+        let currentPath = url.parse(location.href, true);
+        currentPath = siteConstants.addQueryToUrlObject(currentPath, 'share', shareGiphyLink);
+        history.replaceState(null, 'User Entry', url.format(currentPath));
     });
 
     $("#broadcastInput").keypress(function(event) {

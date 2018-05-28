@@ -12,7 +12,7 @@
   <!-- <div type="button" class="button" data-toggle="offCanvasMenu">Slide Menu</div> -->
   <button id="navExpand" class="button fade non-canvas" data-toggle="offCanvasMenu"><i id="navIcon" class="mdi mdi-arrow-expand-left mdi-26px"></i></button>
   <button id="undoGif" class="button fade non-canvas" style="display:none"><i id="undoGifIcon" class="mdi mdi-undo-variant mdi-30px"></i></button>
-  <button id="shareButton" class="button fade non-canvas" style="display:none"><i id="shareButtonIcon" class="mdi mdi-share mdi-30px"></i></button>
+  <button id="shareButton" data-open="shareModal" class="button fade non-canvas" style="display:none"><i id="shareButtonIcon" class="mdi mdi-share mdi-30px"></i></button>
   <!-- <button id="clock-toggle-button" class="button non-canvas" style="display:inline">Tick Tock</button> -->
   <div id="broadcastContainer" class="grid-x grid-margin-x" style="display:none">
     <input id="broadcastInput" class="large-offset-2 shrink cell" type="text" placeholder="Enter broadcast!">
@@ -20,4 +20,11 @@
 
   <canvas id="canvas" display="block">
   </canvas>
+
+  <div class="reveal" id="shareModal" data-reveal>
+    <h1>Share this gif!</h1>
+    <button class="close-button" data-close aria-label="Close modal" type="button">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
 </div>

@@ -11,6 +11,7 @@ const gifSizes= ["original", "downsized", "downsized_large", "downsized_medium",
 var currentImageIndex = 0;
 let currentImageSearchResults;
 let currentSearchQuery;
+let currentImageUrl;
 
 var apiTranslateParams = {
     api_key: apiKey,
@@ -28,10 +29,10 @@ var apiSearchParams = {
 
 function _resolveGiphyResultsToUrlBasedOnCurrentIndex(){
     var gifUrl;
-    
+
     if(!currentImageSearchResults || currentImageSearchResults.pagination.count === 0){
         //TODO get static not found gif
-        gifUrl = "./assets/img/not_found.gif";
+        gifUrl = "./assets/img/error.jpg";
     }else{
         if(currentImageIndex >= currentImageSearchResults.pagination.count) currentImageIndex = 0;
 
@@ -48,6 +49,7 @@ function _resolveGiphyResultsToUrlBasedOnCurrentIndex(){
     
     currentImageIndex = currentImageIndex%(currentImageSearchResults.pagination.count);
 
+    currentImageUrl = gifUrl;
     return(gifUrl);
 }
 
@@ -81,4 +83,13 @@ function searchGiphy(searchTerm, canvas){
     });
 }
 
-export {searchGiphy};
+function getCurrentImageUrl(){
+    let returnImageMediaUrl;
+
+    let mediaUrlIndex = currentImageUrl.indexOf('media');
+    returnImageMediaUrl = currentImageUrl.slice(mediaUrlIndex, currentImageUrl.length);
+
+    return returnImageMediaUrl;
+}
+
+export {searchGiphy, getCurrentImageUrl};

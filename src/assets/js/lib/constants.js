@@ -22,9 +22,19 @@ function getNextLoadingMessage(){
     return constants.waitMessages[returnLoadingMessageIndex];
 }
 
+function addQueryToUrlObject(currentUrlObject, queryKeyToAdd, queryValueToAdd){
+    let returnedUrlObject = Object.assign({}, currentUrlObject);
+
+    delete returnedUrlObject.search;
+    returnedUrlObject.query[queryKeyToAdd] = queryValueToAdd;
+
+    return returnedUrlObject;
+}
+
 const exports = {
     constants: constants,
-    getNextLoadingMessage: getNextLoadingMessage
+    getNextLoadingMessage: getNextLoadingMessage,
+    addQueryToUrlObject: addQueryToUrlObject
 }
 
 
