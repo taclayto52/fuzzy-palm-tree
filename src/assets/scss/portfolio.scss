@@ -3,6 +3,8 @@
 $button-transition-speed: 600ms;
 $button-animation-iteration: 3;
 
+$delay-map: (delay0: 0s, delay1: 300ms);
+
 @media screen and (max-width: 480px) {
     #broadcastInput{
         font-size: rem-calc(32);
@@ -54,12 +56,22 @@ canvas {
     background-color: rgba($color: black, $alpha: 1.0);
 }
 
-.button.pulse-flash-on{
-    animation-name: buttonFlash;
-    animation-duration: $button-transition-speed;
-    animation-iteration-count: $button-animation-iteration;
-    animation-timing-function: ease-in-out;
+@each $delay-name, $delay-time in $delay-map {
+    .button.pulse-flash-on-#{$delay-name} {
+        animation-name: buttonFlash;
+        animation-duration: $button-transition-speed;
+        animation-iteration-count: $button-animation-iteration;
+        animation-timing-function: ease-in-out;
+        animation-delay: #{$delay-time};
+    }
 }
+
+// .button.pulse-flash-on{
+//     animation-name: buttonFlash;
+//     animation-duration: $button-transition-speed;
+//     animation-iteration-count: $button-animation-iteration;
+//     animation-timing-function: ease-in-out;
+// }
 
 @keyframes buttonFlash{
     0%{

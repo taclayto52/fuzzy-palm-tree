@@ -373,6 +373,9 @@ function clearCanvas(canvas, canvasContainer, redrawFunction, activeIntervalFunc
 	if(activeIntervalFunction) clearInterval(activeIntervalFunction);
 	$("#broadcastContainer").hide();
 	$("#undoGif").hide();
+	$("#undoGif").removeClass("pulse-flash-on-delay0");
+	$("#shareButton").hide();
+	$("#shareButton").removeClass("pulse-flash-on-delay1");
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	document.getElementById('canvas').style.backgroundImage = 'none';

@@ -104,10 +104,19 @@ $(document).ready(() => {
             drawBackground(imgEle.src, "repeat", "center");
         }
 
-        activeActivity = "broadcastDisplay";
-        $("#undoGif").show();
-        // could be an issue here where the class is never removed? seems to be working for now
-        $("#undoGif").addClass("pulse-flash-on");
+         // display interface
+         $("#undoGif").show();
+         $("#shareButton").show();
+
+        if(activeActivity !== "broadcastDisplay"){
+            activeActivity = "broadcastDisplay";
+            // could be an issue here where the class is never removed? seems to be working for now
+            if(!($("#undoGif").hasClass("pulse-flash-on-delay0"))){
+                $("#undoGif").addClass("pulse-flash-on-delay0");
+                $("#shareButton").addClass("pulse-flash-on-delay1");
+            }
+        }
+        
         helloRedrawCanvas(canvas, canvasContainer, userBroadcast, "broadcast", {"numOfRows": 5, "imgEle": imgEle});
         activeRedrawFunc = function(){helloRedrawCanvas(canvas, canvasContainer, userBroadcast, "broadcast", {"numOfRows": 5, "imgEle": imgEle})};
         activeIntervalFunc = setInterval(activeRedrawFunc, 300);
@@ -195,6 +204,7 @@ $(document).ready(() => {
     });
 
     $("#undoGif").click(function(event){
+        // prevents click event from continuing to the canvas
         event.stopPropagation();
 
         var currentPath = url.parse(location.href, false);
