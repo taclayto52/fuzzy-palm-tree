@@ -21,10 +21,14 @@
   <canvas id="canvas" display="block">
   </canvas>
 
-  <div class="reveal" id="shareModal" data-reveal>
-    <h1>Share this gif!</h1>
-    <button class="close-button" data-close aria-label="Close modal" type="button">
-      <span aria-hidden="true">&times;</span>
-    </button>
+  <div class="reveal small" id="shareModal" data-reveal>
+    <div class="grid-x align-middle">
+        <h1 class="cell small-12">Share this gif!</h1>
+        <label class="modalRowElement cell small-6">Text that will be displayed in your message:</label>
+        <input id="shareMessageText" class="modalRowElement cell small-6" type="text" placeholder="Enter your message here">
+        <button class="close-button" data-close aria-label="Close modal" type="button">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
   </div>
 </div>

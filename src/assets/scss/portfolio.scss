@@ -56,6 +56,13 @@ canvas {
     background-color: rgba($color: black, $alpha: 1.0);
 }
 
+.modalRowElement{
+    font-size: rem-calc(20);
+    color: rgba($color: black, $alpha: 1);
+    line-height: rem-calc(20);
+    height: rem-calc(35);
+}
+
 @each $delay-name, $delay-time in $delay-map {
     .button.pulse-flash-on-#{$delay-name} {
         animation-name: buttonFlash;
