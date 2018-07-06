@@ -236,6 +236,13 @@ $(document).ready(() => {
         history.replaceState(null, 'User Entry', url.format(currentPath));
     });
 
+    $("#shareModalButton").click(function(event){
+        console.log('share modal button clicked');
+        $.post('/bitly/auth').done(function(data){
+            console.log('posted to bity auth successfully', data);
+        });
+    });
+
     $("#broadcastInput").keypress(function(event) {
         //react to Enter Key
         if(event.key === "Enter"){

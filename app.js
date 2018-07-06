@@ -28,6 +28,11 @@ app.use(express.static(__dirname + '/dist'));
 //   });
 // });
 
+app.post('/bitly/auth', function (req, res){
+  console.log('recieved request to auth against bitly!');
+  res.status(201).send('1234');
+});
+
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
