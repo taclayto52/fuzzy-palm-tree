@@ -18,6 +18,8 @@
     "foundation-sites": "^6.4.3",
     "jquery": ">=3.0.0",
     "motion-ui": "~1.2.2",
+    "request": "^2.87.0",
+    "request-promise": "^4.2.2",
     "url": "^0.11.0",
     "webfontloader": "^1.6.28",
     "what-input": "^4.1.3"

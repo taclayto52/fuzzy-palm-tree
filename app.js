@@ -1,5 +1,6 @@
 var express = require('express');
 var fs = require('fs');
+var bitlyService = require('./backend/bitly.js');
 var app = express();
 
 const christmasBackgrounds = ['/assets/img/christmas/buddy.gif',
@@ -28,10 +29,12 @@ app.use(express.static(__dirname + '/dist'));
 //   });
 // });
 
-app.post('/bitly/auth', function (req, res){
-  console.log('recieved request to auth against bitly!');
-  res.status(201).send('1234');
-});
+// app.post('/bitly/auth', function (req, res){
+//   console.log('recieved request to auth against bitly!');
+//   res.status(201).send('1234');
+// });
+
+bitlyService.authenticateWithBitly();
 
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
