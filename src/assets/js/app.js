@@ -136,13 +136,14 @@ $(document).ready(() => {
     //
     // Default Behavior
     //
+    const defaultBehavior = loadChristmas;
     var currentPath = url.parse(location.href, true);
     if(currentPath.query.broadcast){
         prepareBroadcast();
     }
     else{  
         //default page to load
-        prepareBroadcast(); //working on broadcast for now
+        defaultBehavior(); //it's christmas time
     }
 
     function doneLoadingChristmasFont(){

@@ -249,7 +249,8 @@ function sayChristmasWrapAround(canvas, broadcast, numOfRows, fontFamily){
 	var textColor = 0;
 	var colorIndex = colorOffset;
 	for(var i=0; i< numColsOfText; i++){
-		var yPos = 0;
+		const yInitialOffset = 50;
+		var yPos = yInitialOffset;
 		var alphaValue = 1;
 
 		for(var j=0; j<numLinesOfText; j++){
